@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/app
+      - gem_cache:/gems
+    env_file:
+      - .env
+      - .env-dev-values
+volumes:
+  gem_cache:
