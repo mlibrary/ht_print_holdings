@@ -6,20 +6,38 @@ describe PrintHoldingsItem do
   subject do
     described_class.new(@spm_item)
   end
+  context "to_s" do
+    it "returns the string in the correct form" do
+      expect(subject.to_s).to eq("26881499\t990026435400106381\tCH\t\t0")
+    end
+  end
   context "#gov_doc" do
     it "returns true for a fed gov doc" do
+      #example item: #990187209430106381
       @spm_item["BIB 008 MARC"] = "210504s2020####dcu######b###f000#0#eng#d"
-      expect(subject.gov_doc).to eq(true)
+      expect(subject.gov_doc).to eq(1)
     end
     it "returns false for a doc not from US" do
       #exmaple item #990007985430106381
       @spm_item["BIB 008 MARC"] = "010425s1983####cc#######b###f00010#chi##"
-      expect(subject.gov_doc).to eq(false)
+      expect(subject.gov_doc).to eq(0)
     end
     it "returns false for things that aren't federal" do
       #example item #990033530540106381
       @spm_item["BIB 008 MARC"] = "991115s1999####caua#####b####000#0#eng#d"
-      expect(subject.gov_doc).to eq(false)
+      expect(subject.gov_doc).to eq(0)
+    end
+  end
+  context "#condition" do
+    ["Brittle", "Damaged", "Deteriorating", "Fragile"].each do |cond|
+      it "returns BRT for #{cond} condition" do
+        @spm_item["Physical Condition"] = cond
+        expect(subject.condition).to eq("BRT")
+      end
+    end
+    it "returns empty string for 'None' condition" do
+      @spm_item["Physical Condition"] = "None"
+        expect(subject.condition).to eq("")
     end
   end
   context "#oclc" do

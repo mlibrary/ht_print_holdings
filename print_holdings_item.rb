@@ -4,6 +4,9 @@ class PrintHoldingsItem
   def initialize(data)
     @data = data
   end
+  def to_s
+    [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
+  end
   def oclc
     #to do: what other forms to oclc numbers come in? Handle all. dedup.
     @data["Network Number"].split("; ").filter_map do |x|
@@ -24,7 +27,7 @@ class PrintHoldingsItem
   def gov_doc
     #do something with this?
     bib08 = @data["BIB 008 MARC"]
-    bib08[17] == 'u' && bib08[28] == 'f'
+    (bib08[17] == 'u' && bib08[28] == 'f') ? 1 : 0
   end
   # to do: Electronic Only??????
   def holding_status
@@ -38,6 +41,10 @@ class PrintHoldingsItem
     #CH, WD, LM 
   end
   def condition
-    nil
+    if ["Brittle","Damaged","Deteriorating","Fragile"].include?(@data["Physical Condition"]) 
+      "BRT"
+    else
+      ""
+    end
   end
 end
