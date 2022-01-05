@@ -8,11 +8,27 @@ describe PrintHoldingsItem do
   end
   context "#oclc" do
     it "returns an appropriate oclc string" do
-      expect(subject.oclc).to eq("(OCoLC)ocm26881499")
+      expect(subject.oclc).to eq("26881499")
     end
     it "handles multiple oclc strings" do
+      @spm_item["Network Number"] = "(OCoLC)ocn965386288; (OCoLC)965386289; (MiU)014980159MIU01"
+      expect(subject.oclc).to eq("965386288,965386289")
+    end
+    it "gets rid of redundant numbers" do
       @spm_item["Network Number"] = "(OCoLC)ocn965386288; (OCoLC)965386288; (MiU)014980159MIU01"
-      expect(subject.oclc).to eq("(OCoLC)ocn965386288,(OCoLC)965386288")
+      expect(subject.oclc).to eq("965386288")
+    end
+    it "gets rid of 0 padding" do
+      @spm_item["Network Number"] = "(OCoLC)ocl70000001"
+      expect(subject.oclc).to eq("1")
+    end
+    it "handles ocm" do
+      @spm_item["Network Number"] = "ocm12345678"
+      expect(subject.oclc).to eq("12345678")
+    end
+    it "handles on" do
+      @spm_item["Network Number"] = "on1234567890"
+      expect(subject.oclc).to eq("1234567890")
     end
   end
   context "#mms_id" do
