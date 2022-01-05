@@ -9,10 +9,11 @@ class PrintHoldingsItem
     @data["Network Number"].split("; ").filter_map do |x|
       prefixes = ["ocl7","ocm","ocn","on","(OCoLC)"]
       if x.start_with?(*prefixes) 
-        #strip prefixes. return integer.
+        #strip prefixes
         prefixes.each do |prefix|
           x.gsub!(prefix,"")
         end
+        #return integer to get rid of 0 padding
         x.to_i
       end
     end.uniq.join(",")
@@ -22,7 +23,8 @@ class PrintHoldingsItem
   end
   def gov_doc
     #do something with this?
-    @data["BIB 008 MARC"]
+    bib08 = @data["BIB 008 MARC"]
+    bib08[17] == 'u' && bib08[28] == 'f'
   end
   # to do: Electronic Only??????
   def holding_status

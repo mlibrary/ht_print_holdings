@@ -6,6 +6,22 @@ describe PrintHoldingsItem do
   subject do
     described_class.new(@spm_item)
   end
+  context "#gov_doc" do
+    it "returns true for a fed gov doc" do
+      @spm_item["BIB 008 MARC"] = "210504s2020####dcu######b###f000#0#eng#d"
+      expect(subject.gov_doc).to eq(true)
+    end
+    it "returns false for a doc not from US" do
+      #exmaple item #990007985430106381
+      @spm_item["BIB 008 MARC"] = "010425s1983####cc#######b###f00010#chi##"
+      expect(subject.gov_doc).to eq(false)
+    end
+    it "returns false for things that aren't federal" do
+      #example item #990033530540106381
+      @spm_item["BIB 008 MARC"] = "991115s1999####caua#####b####000#0#eng#d"
+      expect(subject.gov_doc).to eq(false)
+    end
+  end
   context "#oclc" do
     it "returns an appropriate oclc string" do
       expect(subject.oclc).to eq("26881499")
