@@ -1,4 +1,4 @@
-name: Build latest from main and Auto-Deploy to Testing and Staging
+name: Build latest from main
 
 on:
   workflow_run:
@@ -25,40 +25,8 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: Dockerfile.prod
+        file: Dockerfile
         push: true
         tags: | 
-           ghcr.io/mlibrary/${{ secrets.IMAGE_NAME }}:latest
-           ghcr.io/mlibrary/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
-
-  deploy-testing:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: testing
-    steps:
-    - name: Deploy to Testing
-      uses: mlibrary/deploy-to-kubernetes@v1
-      with:
-        github_username: ${{ github.actor }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        image: mlibrary/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
-        cluster_ca: ${{ secrets.HATCHER_CLUSTER_CA }}
-        cluster_server: https://hatcher.kubernetes.lib.umich.edu
-        namespace_token: ${{ secrets.HATCHER_TOKEN }}
-        namespace: ${{ secrets.NAMESPACE }}
-
-  deploy-staging:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-    - name: Deploy to Staging
-      uses: mlibrary/deploy-to-kubernetes@v1
-      with:
-        github_username: ${{ github.actor }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        image: mlibrary/${{ secrets.IMAGE_NAME }}:${{ github.sha }}
-        cluster_ca: ${{ secrets.HATCHER_CLUSTER_CA }}
-        cluster_server: https://hatcher.kubernetes.lib.umich.edu
-        namespace_token: ${{ secrets.HATCHER_TOKEN }}
-        namespace: ${{ secrets.NAMESPACE }}
+           ghcr.io/mlibrary/ht-print-holdings-unstable:latest
+           ghcr.io/mlibrary/ht-print-holdings-unstable:${{ github.sha }}
