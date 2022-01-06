@@ -7,8 +7,7 @@ gem 'alma_rest_client',
 
 
 group :development, :test do
-  gem 'pry'
-  gem 'pry-byebug'
+  gem 'byebug'
   gem 'rspec'
   gem 'webmock'
   gem 'simplecov'

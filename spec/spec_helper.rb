@@ -14,7 +14,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'rspec'
-require 'pry-byebug'
+require 'byebug'
 require 'webmock/rspec'
 require_relative './support/alma_rest_client_stubs'
 require File.expand_path '../../print_holdings_item.rb', __FILE__
