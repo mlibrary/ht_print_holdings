@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/mlibrary/alma_rest_client
-  revision: 674fe70fb412f021f11562301046b3acd419f344
-  tag: 1.2.0
+  revision: 60c86b4ad5b3739787093169fc45449e4913070f
+  tag: 1.2.1
   specs:
     alma_rest_client (1.2.0)
       activesupport (~> 6.0, >= 4.2)
@@ -11,7 +11,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (6.1.4.1)
+    activesupport (6.1.4.4)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -36,7 +36,7 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.1115)
-    minitest (5.14.4)
+    minitest (5.15.0)
     multi_xml (0.6.0)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -71,7 +71,7 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    zeitwerk (2.5.1)
+    zeitwerk (2.5.3)
 
 PLATFORMS
   x86_64-linux

@@ -16,5 +16,8 @@ RUN useradd -m -d /app -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}
 RUN mkdir -p /gems && chown ${UID}:${GID} /gems
 USER $UNAME
 
-
 WORKDIR /app
+
+COPY --chown=${UID}:${GID} . /app
+
+RUN bundle install

@@ -1,5 +1,3 @@
-require 'alma_rest_client'
-
 class PrintHoldingsItem
   def initialize(data)
     @data = data
@@ -46,5 +44,21 @@ class PrintHoldingsItem
     else
       ""
     end
+  end
+end
+class PrintHoldingsMultiPartMonograph < PrintHoldingsItem
+  def to_s
+    [oclc,mms_id,holding_status,condition,enum_chron,gov_doc].join("\t")
+  end
+  def enum_chron
+    @data["Description"].strip
+  end
+end
+class PrintHoldingsSerials < PrintHoldingsItem
+  def to_s
+    [oclc,mms_id,issn,gov_doc].join("\t")
+  end
+  def issn
+    @data["ISSN"].strip
   end
 end
