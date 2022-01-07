@@ -59,6 +59,6 @@ class PrintHoldingsSerials < PrintHoldingsItem
     [oclc,mms_id,issn,gov_doc].join("\t")
   end
   def issn
-    @data["ISSN"].strip
+    @data["ISSN"]&.strip
   end
 end

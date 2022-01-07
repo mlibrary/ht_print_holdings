@@ -1,3 +1,5 @@
+*.tsv
+*.csv
 /.bundle/
 /.yardoc
 /_yardoc/
