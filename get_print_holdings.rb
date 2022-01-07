@@ -47,8 +47,8 @@ class SerialsReport < PrintHoldingsReport
   def name
     "serials"
   end
-  def ph_item(line)
-    PrintHoldingsSerials.new(line)
+  def ph_item(row)
+    PrintHoldingsSerials.new(row)
   end
   def report_path
     '/shared/University of Michigan 01UMICH_INST/Reports/apps/print-holdings/PrintHoldingsSerials'
@@ -60,28 +60,41 @@ class SerialsReport < PrintHoldingsReport
     'serials_ph.tsv' 
   end
 end
+class SPMReport < PrintHoldingsReport
+  def name
+    "Single Part Monographs"
+  end
+  def ph_item(row)
+    PrintHoldingsItem.new(row)
+  end
+  def report_path
+    '/shared/University of Michigan 01UMICH_INST/Reports/apps/print-holdings/PrintHoldingsSinglePartMonographs'
+  end
+  def csv_path
+    'spm.csv'
+  end
+  def ph_path
+    'spm_ph.tsv' 
+  end
+end
+class MPMReport < PrintHoldingsReport
+  def name
+    "Multi Part Monographs"
+  end
+  def ph_item(row)
+    PrintHoldingsMultiPartMonograph.new(row)
+  end
+  def report_path
+    '/shared/University of Michigan 01UMICH_INST/Reports/apps/print-holdings/PrintHoldingsMultiPartMonographs'
+  end
+  def csv_path
+    'mpm.csv'
+  end
+  def ph_path
+    'mpm_ph.tsv' 
+  end
+end
 
 SerialsReport.new.dump_report
-#def dump_report(report_path:, csv:, ph:, kind:,client: AlmaRestClient.client, logger: Logger.new(STDOUT) )
-  #first_line = true
-  #client.get_report(path: report_path) do |x| 
-    #if first_line
-      #csv.puts x.keys.to_csv
-      #flag = false
-    #end
-    #csv.puts x.values.to_csv
-    #case kind
-    #when :spm
-    #when :mpm
-    #when :serials
-    #end
-  #end
-  #logger.info("done")
-#end
-#def file(name)
-  #File.open(name, 'a')
-#end
-#spm = '/shared/University of Michigan 01UMICH_INST/Reports/apps/print-holdings/PrintHoldingsSinglePartMonographs'
-#mpm = '/shared/University of Michigan 01UMICH_INST/Reports/apps/print-holdings/PrintHoldingsMultiPartMonographs'
-#serials = '/shared/University of Michigan 01UMICH_INST/Reports/apps/print-holdings/PrintHoldingsSerials'
-
+MPMReport.new.dump_report
+SPMReport.new.dump_report
