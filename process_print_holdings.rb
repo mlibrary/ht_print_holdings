@@ -71,4 +71,4 @@ end
 
 #SerialsReport.new.dump_report
 #MPMReport.new.dump_report
-SPMReport.new(csv: 'spm_short.csv').dump_report
+SPMReport.new(csv: 'spm_full.csv').dump_report

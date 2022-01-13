@@ -11,7 +11,7 @@ class PrintHoldingsItem
   def skip?
     skippable_locations.include?(@data["Location Code"]) ||
       @data["Permanent Call Number"].match?("MICRO") ||
-      !(@data["Barcode"].match?(/^\d9015/))
+      !(@data["Barcode"]&.match?(/^\d9015/))
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")

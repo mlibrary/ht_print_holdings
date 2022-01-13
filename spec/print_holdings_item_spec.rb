@@ -29,6 +29,10 @@ describe PrintHoldingsItem do
       @spm_item["Barcode"] = "B39015"
       expect(subject.skip?).to eq(true)
     end
+    it "is true for nil barcode" do
+      @spm_item["Barcode"] =  nil
+      expect(subject.skip?).to eq(true)
+    end
   end
   context "#gov_doc" do
     it "returns true for a fed gov doc" do
