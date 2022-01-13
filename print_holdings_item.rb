@@ -2,16 +2,20 @@ class PrintHoldingsItem
   def initialize(data)
     @data = data
   end
-  def skippable_locations
+  def skippable_location?
     reserves = ['CAR','OPEN','RESI','RESP','RESC','ERES']
     games = ["GAME"]
     micro = ["GLMR"]
-    [reserves,games,micro].flatten
+    [reserves,games,micro].flatten.include?(@data["Location Code"])
+  end
+  def invalid_barcode?
+    !@data["Barcode"].nil? && !(@data["Barcode"]&.match?(/^\d9015/))
+  end
+  def skippable_callnumber?
+    @data["Permanent Call Number"].match?(/(film|micro|cdrom|cd-rom|classed)/i)
   end
   def skip?
-    skippable_locations.include?(@data["Location Code"]) ||
-      @data["Permanent Call Number"].match?("MICRO") ||
-      !(@data["Barcode"]&.match?(/^\d9015/))
+    skippable_location? || skippable_callnumber? || invalid_barcode?
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")

@@ -1,6 +1,7 @@
 require 'csv'
 require_relative 'print_holdings_item'
 require 'logger'
+require 'progress_bar'
 require 'byebug'
 
 class PrintHoldingsReport
@@ -10,13 +11,14 @@ class PrintHoldingsReport
   end
   def dump_report
     @logger.info "start #{name} report"
+    puts "\n"
+    line_count = %x{wc -l < "#{@csv_path}"}.to_i - 1
     report = file(report_path)
-    counter = 0
+    bar = ProgressBar.new(line_count) 
     CSV.foreach(@csv_path, headers: true, encoding: 'bom|utf-8' ) do |x|
       item = ph_item(x)
       report.puts item unless item.skip?
-      counter = counter + 1
-      @logger.info "processed #{counter} items" if counter % 1000 == 0
+      bar.increment!
     end
     @logger.info "finished #{name} report"
   end

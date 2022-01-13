@@ -7,6 +7,7 @@ gem 'alma_rest_client',
   #ref: '11e8606a3880da03561dde1871e9cae021d40dfb'
   #tag: '1.2.2'
 
+gem 'progress_bar'
 
 group :development, :test do
   gem 'byebug'
