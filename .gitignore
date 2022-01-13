@@ -1,5 +1,6 @@
 *.tsv
 *.csv
+*.txt
 /.bundle/
 /.yardoc
 /_yardoc/
@@ -8,6 +9,7 @@
 /pkg/
 /spec/reports/
 /tmp/
+.bash_history
 
 # rspec failure tracking
 .rspec_status

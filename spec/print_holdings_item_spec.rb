@@ -1,7 +1,9 @@
 require "spec_helper"
+require "csv"
 describe PrintHoldingsItem do
   before(:each) do
-    @spm_item = JSON.parse(fixture("spm_item.json"))
+#    @spm_item = JSON.parse(fixture("spm_item.json"))
+    @spm_item = CSV.read('spec/fixtures/spm_item.csv', headers: true, encoding: 'bom|utf-8').first 
   end
   subject do
     described_class.new(@spm_item)
@@ -9,6 +11,23 @@ describe PrintHoldingsItem do
   context "to_s" do
     it "returns the string in the correct form" do
       expect(subject.to_s).to eq("26881499\t990026435400106381\tCH\t\t0")
+    end
+  end
+  context "#skip?" do
+    it "is false for non-skippable item" do
+      expect(subject.skip?).to eq(false)
+    end
+    it "is true for skippable location" do
+      @spm_item["Location Code"] = "GLMR"
+      expect(subject.skip?).to eq(true)
+    end
+    it "is true for 'MICRO' in beggining of callnumber" do
+      @spm_item["Permanent Call Number"] = "MICRO #{@spm_item["Permanent Call Number"]}"
+      expect(subject.skip?).to eq(true)
+    end
+    it "is true for Barcode that doesn't start with '\d9015'" do
+      @spm_item["Barcode"] = "B39015"
+      expect(subject.skip?).to eq(true)
     end
   end
   context "#gov_doc" do
@@ -41,6 +60,10 @@ describe PrintHoldingsItem do
     end
   end
   context "#oclc" do
+    it "handles nil Network Number" do
+      @spm_item["Network Number"] = nil
+      expect(subject.oclc).to eq("")
+    end
     it "returns an appropriate oclc string" do
       expect(subject.oclc).to eq("26881499")
     end
@@ -76,6 +99,11 @@ describe PrintHoldingsItem do
     end
     it "returns WD for Deleted Lifecycle" do
       @spm_item["Lifecycle"] = "Deleted"
+      expect(subject.holding_status).to eq("WD")
+    end
+    it "returns WD for electronic only" do
+      @spm_item["Library Code"] = "SDR"
+      @spm_item["Location Code"] = "EO"
       expect(subject.holding_status).to eq("WD")
     end
     it "returns LM for 'Missing' Process Type" do

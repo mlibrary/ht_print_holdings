@@ -13,14 +13,16 @@ class PrintHoldingsReport
     csv = file(csv_path)
     ph = file(ph_path)
     first_line = true
-    client.get_report(path: report_path) do |x| 
+    response = client.get_report(path: report_path) do |x| 
       if first_line
         csv.puts x.keys.to_csv
         first_line = false
       end
       csv.puts x.values.to_csv
-      ph.puts ph_item(x)
+#      ph.puts ph_item(x)
     end
+    @logger.info "response code: #{response.code}"
+    @logger.error "response message: #{response&.message}" if response.code != 200
     @logger.info "finished #{name} report"
   end
   def name
@@ -95,6 +97,6 @@ class MPMReport < PrintHoldingsReport
   end
 end
 
-SerialsReport.new.dump_report
-MPMReport.new.dump_report
+#SerialsReport.new.dump_report
+#MPMReport.new.dump_report
 SPMReport.new.dump_report

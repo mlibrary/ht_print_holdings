@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/mlibrary/alma_rest_client
-  revision: 2976c2b6bc50d3905d71150afeff9d5b08b1642e
-  tag: 1.2.2
+  revision: 5f8c9c9b9109a1c0e0dbfea15930d38aff2e1a55
+  branch: add-retries
   specs:
     alma_rest_client (1.2.2)
       activesupport (~> 6.0, >= 4.2)
