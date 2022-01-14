@@ -12,7 +12,8 @@ Copy `.env-example` to `.env`
 $ cp .env-example .env
 ```
 
-Edit `.env` Replace the value for `ALMA_API_KEY` with a real key with appropriate permissions
+If your using the Alma Analytics Api, edit `.env` Replace the value for `ALMA_API_KEY` with a real key with appropriate permissions. 
+If you're processing a csv file, a real API KEY isn't necessary.
 
 Build the image
 ```
@@ -24,7 +25,14 @@ Install the gems
 $ docker-compose run --rm web bundle install
 ```
 
-To run the script
+To run the script to use the Alma API:
 ```
 $ docker-compose run --rm web bundle exec ruby get_print_holdings.rb
+```
+
+To run the script to process a csv, edit the last three lines of  `process_print_holdings.csv` to reference your csv file(s).
+
+Then run
+```
+$ docker-compose run --rm web bundle exec ruby process_print_holdings.rb
 ```
