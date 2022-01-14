@@ -49,7 +49,6 @@ class PrintHoldingsItem
   def deleted?
     @data["Lifecycle"] == "Deleted"
   end
-  # to do: Electronic Only??????
   
   def holding_status
     if electronic_only? || deleted?
@@ -78,10 +77,19 @@ class PrintHoldingsMultiPartMonograph < PrintHoldingsItem
   end
 end
 class PrintHoldingsSerials < PrintHoldingsItem
+  def skip?
+    skippable_location? || skippable_callnumber?
+  end
   def to_s
     [oclc,mms_id,issn,gov_doc].join("\t")
   end
   def issn
     @data["ISSN"]&.strip
+  end
+  def condition
+    ""
+  end
+  def holding_status
+    ""
   end
 end
