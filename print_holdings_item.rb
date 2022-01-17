@@ -28,7 +28,7 @@ class PrintHoldingsItem
     network_number = @data["Network Number"] || ""
     network_number.split("; ").filter_map do |x|
       prefixes = ["ocl7","ocm","ocn","on","\\(OCoLC\\)","\\(OCLC\\)"].map{|x| /#{x}/i }
-      if prefixes.any?{|y| x.match?(y)}
+      if x.start_with?(*prefixes)
         #strip prefixes
         prefixes.each do |prefix|
           x.gsub!(prefix,"")
