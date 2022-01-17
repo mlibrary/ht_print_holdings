@@ -8,6 +8,9 @@ class PrintHoldingsItem
     micro = ["GLMR"]
     [reserves,games,micro].flatten.include?(@data["Location Code"])
   end
+  def sdr_not_eo?
+    @data["Library Code"] == 'SDR' && @data["Location Code"] != 'EO'
+  end
   def invalid_barcode?
     !@data["Barcode"].nil? && !(@data["Barcode"]&.match?(/^\d9015/))
   end
@@ -15,7 +18,7 @@ class PrintHoldingsItem
     @data["Permanent Call Number"].match?(/(film|micro|cdrom|cd-rom|classed)/i)
   end
   def skip?
-    skippable_location? || skippable_callnumber? || invalid_barcode?
+    skippable_location? || skippable_callnumber? || sdr_not_eo? || invalid_barcode? 
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
@@ -24,8 +27,8 @@ class PrintHoldingsItem
     #to do: what other forms to oclc numbers come in? Handle all. dedup.
     network_number = @data["Network Number"] || ""
     network_number.split("; ").filter_map do |x|
-      prefixes = ["ocl7","ocm","ocn","on","(OCoLC)"]
-      if x.start_with?(*prefixes) 
+      prefixes = ["ocl7","ocm","ocn","on","\\(OCoLC\\)","\\(OCLC\\)"].map{|x| /#{x}/i }
+      if prefixes.any?{|y| x.match?(y)}
         #strip prefixes
         prefixes.each do |prefix|
           x.gsub!(prefix,"")
@@ -78,7 +81,7 @@ class PrintHoldingsMultiPartMonograph < PrintHoldingsItem
 end
 class PrintHoldingsSerials < PrintHoldingsItem
   def skip?
-    skippable_location? || skippable_callnumber?
+    skippable_location? || skippable_callnumber? || sdr_not_eo?
   end
   def to_s
     [oclc,mms_id,issn,gov_doc].join("\t")

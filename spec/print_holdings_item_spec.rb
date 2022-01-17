@@ -17,6 +17,11 @@ describe PrintHoldingsItem do
     it "is false for non-skippable item" do
       expect(subject.skip?).to eq(false)
     end
+    it "is true for SDR not EO item" do
+      @spm_item["Library Code"] = "SDR"
+      @spm_item["Location Code"] = "NOTEO"
+      expect(subject.skip?).to eq(true)
+    end
     it "is true for skippable location" do
       @spm_item["Location Code"] = "GLMR"
       expect(subject.skip?).to eq(true)
@@ -83,6 +88,10 @@ describe PrintHoldingsItem do
       @spm_item["Network Number"] = "(OCoLC)ocl70000001"
       expect(subject.oclc).to eq("1")
     end
+    it "handles (OCLC)" do
+      @spm_item["Network Number"] = "(OCLC)12345678"
+      expect(subject.oclc).to eq("12345678")
+    end
     it "handles ocm" do
       @spm_item["Network Number"] = "ocm12345678"
       expect(subject.oclc).to eq("12345678")
@@ -90,6 +99,10 @@ describe PrintHoldingsItem do
     it "handles on" do
       @spm_item["Network Number"] = "on1234567890"
       expect(subject.oclc).to eq("1234567890")
+    end
+    it "is case insenstive" do
+      @spm_item["Network Number"] = "ON1234567890; OCM12345678; (ocOlc)ocn919191"
+      expect(subject.oclc).to eq("1234567890,12345678,919191")
     end
   end
   context "#mms_id" do
