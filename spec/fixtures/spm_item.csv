@@ -1,2 +1,2 @@
-MMS Id,Network Number,Barcode,Physical Item Id,Material Type,Library Code,Location Code,Holding Id,Permanent Call Number,Process Type,Lifecycle,Physical Condition,BIB 008 MARC
-990026435400106381,(OCoLC)ocm26881499; (MiU)002643540MIU01,39015021159242,23841206440006381,Music Score,BUHR,MAIN,22841206470006381,LP 6380,None,Active,None,930712s1950####nyumun###fi#########fre#d
+﻿MMS Id,OCLC Control Number (035a),Barcode,Physical Item Id,Material Type,Library Code,Location Code,Holding Id,Permanent Call Number,Process Type,Lifecycle,Physical Condition,BIB 008 MARC
+990026435400106381,26881499,39015021159242,23841206440006381,Music Score,BUHR,MAIN,22841206470006381,LP 6380,None,Active,None,930712s1950####nyumun###fi#########fre#d

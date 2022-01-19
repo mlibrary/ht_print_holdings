@@ -17,6 +17,12 @@ describe PrintHoldingsItem do
     it "is false for non-skippable item" do
       expect(subject.skip?).to eq(false)
     end
+    it "is false for SDR EO item" do
+      @spm_item["Library Code"] = "SDR"
+      @spm_item["Location Code"] = "EO"
+      @spm_item["Barcode"] = "definitely incorrect barcode but gets passed through anyway"
+      expect(subject.skip?).to eq(false)
+    end
     it "is true for SDR not EO item" do
       @spm_item["Library Code"] = "SDR"
       @spm_item["Location Code"] = "NOTEO"
@@ -31,7 +37,25 @@ describe PrintHoldingsItem do
       expect(subject.skip?).to eq(true)
     end
     it "is true for Barcode that doesn't start with '\d9015'" do
+      @spm_item["Barcode"] = "C39015"
+      expect(subject.skip?).to eq(true)
+    end
+    it "is false for 'B' barcode" do
       @spm_item["Barcode"] = "B39015"
+      expect(subject.skip?).to eq(false)
+    end
+    it "is false for 'A' barcode" do
+      @spm_item["Barcode"] = "A39015"
+      expect(subject.skip?).to eq(false)
+    end
+    it "is true for 'B' barcode that's in process" do
+      @spm_item["Barcode"] = "B39015"
+      @spm_item["Process Type"] = "In Process"
+      expect(subject.skip?).to eq(true)
+    end
+    it "is true for 'A' barcode that's in process" do
+      @spm_item["Barcode"] = "A39015"
+      @spm_item["Process Type"] = "In Process"
       expect(subject.skip?).to eq(true)
     end
     it "is false for nil barcode" do
@@ -69,40 +93,33 @@ describe PrintHoldingsItem do
     end
   end
   context "#oclc" do
+    let(:network_number) { 'OCLC Control Number (035a)'}
     it "handles nil Network Number" do
-      @spm_item["Network Number"] = nil
+      @spm_item[network_number] = nil
       expect(subject.oclc).to eq("")
     end
     it "returns an appropriate oclc string" do
       expect(subject.oclc).to eq("26881499")
     end
-    it "handles multiple oclc strings" do
-      @spm_item["Network Number"] = "(OCoLC)ocn965386288; (OCoLC)965386289; (MiU)014980159MIU01"
-      expect(subject.oclc).to eq("965386288,965386289")
+    it "handles multiple values" do
+      @spm_item[network_number] = "123; 12345"
+      expect(subject.oclc).to eq("123,12345")
     end
     it "gets rid of redundant numbers" do
-      @spm_item["Network Number"] = "(OCoLC)ocn965386288; (OCoLC)965386288; (MiU)014980159MIU01"
+      @spm_item[network_number] = "965386288; 965386288"
       expect(subject.oclc).to eq("965386288")
     end
     it "gets rid of 0 padding" do
-      @spm_item["Network Number"] = "(OCoLC)ocl70000001"
+      @spm_item[network_number] = "0000001"
       expect(subject.oclc).to eq("1")
     end
-    it "handles (OCLC)" do
-      @spm_item["Network Number"] = "(OCLC)12345678"
-      expect(subject.oclc).to eq("12345678")
+    it "rejects 0" do
+      @spm_item[network_number] = "0"
+      expect(subject.oclc).to eq("")
     end
-    it "handles ocm" do
-      @spm_item["Network Number"] = "ocm12345678"
-      expect(subject.oclc).to eq("12345678")
-    end
-    it "handles on" do
-      @spm_item["Network Number"] = "on1234567890"
-      expect(subject.oclc).to eq("1234567890")
-    end
-    it "is case insenstive" do
-      @spm_item["Network Number"] = "ON1234567890; OCM12345678; (ocOlc)ocn919191"
-      expect(subject.oclc).to eq("1234567890,12345678,919191")
+    it "rejects more than 9 digits" do
+      @spm_item[network_number] = "1234567890"
+      expect(subject.oclc).to eq("")
     end
   end
   context "#mms_id" do

@@ -8,34 +8,40 @@ class PrintHoldingsItem
     micro = ["GLMR"]
     [reserves,games,micro].flatten.include?(@data["Location Code"])
   end
-  def sdr_not_eo?
-    @data["Library Code"] == 'SDR' && @data["Location Code"] != 'EO'
+
+  def sdr_eo?
+    @data["Library Code"] == 'SDR' && @data["Location Code"] == 'EO'
+  end
+  def sdr?
+    @data["Library Code"] == 'SDR'
+  end
+  def valid_barcode?
+    @data["Barcode"].nil? || 
+      @data["Barcode"]&.match?(/^\d9015/) || 
+      (@data["Barcode"]&.match?(/^[AB]/i) && not_in_process?)
+  end
+  def not_in_process?
+    @data["Process Type"] != "In Process"
   end
   def invalid_barcode?
-    !@data["Barcode"].nil? && !(@data["Barcode"]&.match?(/^\d9015/))
+    !valid_barcode? 
   end
   def skippable_callnumber?
     @data["Permanent Call Number"].match?(/(film|micro|cdrom|cd-rom|classed)/i)
   end
   def skip?
-    skippable_location? || skippable_callnumber? || sdr_not_eo? || invalid_barcode? 
+    return false if sdr_eo?
+    skippable_location? || skippable_callnumber? || sdr? || invalid_barcode? 
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
   end
   def oclc
     #to do: what other forms to oclc numbers come in? Handle all. dedup.
-    network_number = @data["Network Number"] || ""
+    network_number = @data['OCLC Control Number (035a)'] || ""
     network_number.split("; ").filter_map do |x|
-      prefixes = ["ocl7","ocm","ocn","on","\\(OCoLC\\)","\\(OCLC\\)"].map{|x| /#{x}/i }
-      if x.start_with?(*prefixes)
-        #strip prefixes
-        prefixes.each do |prefix|
-          x.gsub!(prefix,"")
-        end
-        #return integer to get rid of 0 padding
-        x.to_i
-      end
+      x = x.to_i
+      x if x > 0 && x < 999999999
     end.uniq.join(",")
   end
   def mms_id
