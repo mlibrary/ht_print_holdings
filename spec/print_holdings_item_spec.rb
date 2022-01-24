@@ -28,8 +28,16 @@ describe PrintHoldingsItem do
       @spm_item["Location Code"] = "NOTEO"
       expect(subject.skip?).to eq(true)
     end
+    it "is true for skippable library" do
+      @spm_item["Library Code"] = "ELEC"
+      expect(subject.skip?).to eq(true)
+    end
     it "is true for skippable location" do
       @spm_item["Location Code"] = "GLMR"
+      expect(subject.skip?).to eq(true)
+    end
+    it "is true for numeric location" do
+      @spm_item["Location Code"] = "12345"
       expect(subject.skip?).to eq(true)
     end
     it "is true for 'MICRO' in beggining of callnumber" do
@@ -117,8 +125,12 @@ describe PrintHoldingsItem do
       @spm_item[network_number] = "0"
       expect(subject.oclc).to eq("")
     end
-    it "rejects more than 9 digits" do
+    it "accepts 9 digits" do
       @spm_item[network_number] = "1234567890"
+      expect(subject.oclc).to eq("1234567890")
+    end
+    it "rejects more than 10 digits" do
+      @spm_item[network_number] = "91234567890"
       expect(subject.oclc).to eq("")
     end
   end

@@ -6,14 +6,14 @@ class PrintHoldingsItem
     reserves = ['CAR','OPEN','RESI','RESP','RESC','ERES']
     games = ["GAME"]
     micro = ["GLMR"]
-    [reserves,games,micro].flatten.include?(@data["Location Code"])
+    [reserves,games,micro].flatten.include?(@data["Location Code"]) || @data["Location Code"].match?(/^\d/)
   end
 
   def sdr_eo?
     @data["Library Code"] == 'SDR' && @data["Location Code"] == 'EO'
   end
-  def sdr?
-    @data["Library Code"] == 'SDR'
+  def skippable_library?
+    ["SDR","ELEC"].include?(@data["Library Code"])
   end
   def valid_barcode?
     @data["Barcode"].nil? || 
@@ -31,7 +31,7 @@ class PrintHoldingsItem
   end
   def skip?
     return false if sdr_eo?
-    skippable_location? || skippable_callnumber? || sdr? || invalid_barcode? 
+    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? 
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
@@ -41,7 +41,7 @@ class PrintHoldingsItem
     network_number = @data['OCLC Control Number (035a)'] || ""
     network_number.split("; ").filter_map do |x|
       x = x.to_i
-      x if x > 0 && x < 999999999
+      x if x > 0 && x < 9999999999
     end.uniq.join(",")
   end
   def mms_id
