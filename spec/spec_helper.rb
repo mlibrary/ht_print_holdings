@@ -16,7 +16,6 @@
 require 'rspec'
 require 'byebug'
 require 'webmock/rspec'
-require_relative './support/alma_rest_client_stubs'
 require File.expand_path '../../print_holdings_item.rb', __FILE__
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate

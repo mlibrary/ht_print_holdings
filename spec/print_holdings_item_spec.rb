@@ -2,7 +2,6 @@ require "spec_helper"
 require "csv"
 describe PrintHoldingsItem do
   before(:each) do
-#    @spm_item = JSON.parse(fixture("spm_item.json"))
     @spm_item = CSV.read('spec/fixtures/spm_item.csv', headers: true, encoding: 'bom|utf-8').first 
   end
   subject do
