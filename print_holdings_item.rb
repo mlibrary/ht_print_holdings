@@ -8,6 +8,9 @@ class PrintHoldingsItem
     micro = ["GLMR"]
     [reserves,games,micro].flatten.include?(@data["Location Code"]) || @data["Location Code"].match?(/^\d/)
   end
+  def no_bib008?
+    @data["BIB 008 MARC"].nil?
+  end
 
   def sdr_eo?
     @data["Library Code"] == 'SDR' && @data["Location Code"] == 'EO'
@@ -31,7 +34,7 @@ class PrintHoldingsItem
   end
   def skip?
     return false if sdr_eo?
-    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? 
+    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? || no_bib008?
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")

@@ -17,6 +17,10 @@ describe PrintHoldingsItem do
     it "is false for non-skippable item" do
       expect(subject.skip?).to eq(false)
     end
+    it "is true for empty BIB 008" do
+      @spm_item["BIB 008 MARC"] = nil
+      expect(subject.skip?).to eq(true)
+    end
     it "is false for SDR EO item" do
       @spm_item["Library Code"] = "SDR"
       @spm_item["Location Code"] = "EO"
