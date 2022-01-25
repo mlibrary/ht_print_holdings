@@ -20,6 +20,20 @@ describe PrintHoldingsItem do
       @spm_item["BIB 008 MARC"] = nil
       expect(subject.skip?).to eq(true)
     end
+    context "byte 23 of Bib 008" do
+      it "is true when it is 'a'" do
+        @spm_item["BIB 008 MARC"][23] = 'a'
+        expect(subject.skip?).to eq(true)
+      end
+      it "is true when it is 'b'" do
+        @spm_item["BIB 008 MARC"][23] = 'b'
+        expect(subject.skip?).to eq(true)
+      end
+      it "is true when it is 'c'" do
+        @spm_item["BIB 008 MARC"][23] = 'c'
+        expect(subject.skip?).to eq(true)
+      end
+    end
     it "is false for SDR EO item" do
       @spm_item["Library Code"] = "SDR"
       @spm_item["Location Code"] = "EO"

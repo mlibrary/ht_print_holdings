@@ -2,39 +2,9 @@ class PrintHoldingsItem
   def initialize(data)
     @data = data
   end
-  def skippable_location?
-    reserves = ['CAR','OPEN','RESI','RESP','RESC','ERES']
-    games = ["GAME"]
-    micro = ["GLMR"]
-    [reserves,games,micro].flatten.include?(@data["Location Code"]) || @data["Location Code"].match?(/^\d/)
-  end
-  def no_bib008?
-    @data["BIB 008 MARC"].nil?
-  end
-
-  def sdr_eo?
-    @data["Library Code"] == 'SDR' && @data["Location Code"] == 'EO'
-  end
-  def skippable_library?
-    ["SDR","ELEC"].include?(@data["Library Code"])
-  end
-  def valid_barcode?
-    @data["Barcode"].nil? || 
-      @data["Barcode"]&.match?(/^\d9015/) || 
-      (@data["Barcode"]&.match?(/^[AB]/i) && not_in_process?)
-  end
-  def not_in_process?
-    @data["Process Type"] != "In Process"
-  end
-  def invalid_barcode?
-    !valid_barcode? 
-  end
-  def skippable_callnumber?
-    @data["Permanent Call Number"].match?(/(film|micro|cdrom|cd-rom|classed)/i)
-  end
   def skip?
     return false if sdr_eo?
-    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? || no_bib008?
+    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? || invalid_bib008?
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
@@ -79,6 +49,37 @@ class PrintHoldingsItem
       ""
     end
   end
+  private
+  def skippable_location?
+    reserves = ['CAR','OPEN','RESI','RESP','RESC','ERES']
+    games = ["GAME"]
+    micro = ["GLMR"]
+    [reserves,games,micro].flatten.include?(@data["Location Code"]) || @data["Location Code"].match?(/^\d/)
+  end
+  def sdr_eo?
+    @data["Library Code"] == 'SDR' && @data["Location Code"] == 'EO'
+  end
+  def skippable_library?
+    ["SDR","ELEC"].include?(@data["Library Code"])
+  end
+  def valid_barcode?
+    @data["Barcode"].nil? || 
+      @data["Barcode"]&.match?(/^\d9015/) || 
+      (@data["Barcode"]&.match?(/^[AB]/i) && not_in_process?)
+  end
+  def not_in_process?
+    @data["Process Type"] != "In Process"
+  end
+  def invalid_barcode?
+    !valid_barcode? 
+  end
+  def skippable_callnumber?
+    @data["Permanent Call Number"].match?(/(film|micro|cdrom|cd-rom|classed)/i)
+  end
+  def invalid_bib008?
+    @data["BIB 008 MARC"].nil? || ['a','b','c'].include?(@data["BIB 008 MARC"][23])
+  end
+
 end
 class PrintHoldingsMultiPartMonograph < PrintHoldingsItem
   def to_s
