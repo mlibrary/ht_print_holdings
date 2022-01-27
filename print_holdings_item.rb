@@ -91,18 +91,13 @@ class PrintHoldingsMultiPartMonograph < PrintHoldingsItem
 end
 class PrintHoldingsSerials < PrintHoldingsItem
   def skip?
-    skippable_location? || skippable_callnumber? || sdr_not_eo?
+    return false if sdr_eo?
+    skippable_library? || skippable_location? || skippable_callnumber?
   end
   def to_s
     [oclc,mms_id,issn,gov_doc].join("\t")
   end
   def issn
-    @data["ISSN"]&.strip
-  end
-  def condition
-    ""
-  end
-  def holding_status
-    ""
+    @data["ISSN"].split("; ").join(",").strip
   end
 end

@@ -186,4 +186,18 @@ describe PrintHoldingsItem do
       expect(subject.holding_status).to eq("LM")
     end
   end
+
+end
+describe PrintHoldingsSerials do
+  before(:each) do
+    @serials_item = CSV.read('spec/fixtures/serials_item.csv', headers: true, encoding: 'bom|utf-8').first 
+  end
+  subject do
+    described_class.new(@serials_item)
+  end
+  context "#issn" do
+    it "returns comma separated issns" do
+      expect(subject.issn).to eq("1476-5551,0887-6924")
+    end
+  end
 end
