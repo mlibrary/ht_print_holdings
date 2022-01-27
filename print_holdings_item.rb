@@ -98,6 +98,10 @@ class PrintHoldingsSerials < PrintHoldingsItem
     [oclc,mms_id,issn,gov_doc].join("\t")
   end
   def issn
-    @data["ISSN"].split("; ").join(",").strip
+    @data["ISSN"]&.split("; ")&.map do |x|
+      #Regex for issns from https://en.wikipedia.org/wiki/International_Standard_Serial_Number#Code_format
+      valid_issn = x.match(/[0-9]{4}-[0-9]{3}[0-9xX]/)
+      valid_issn.to_s unless valid_issn.nil?
+    end&.compact&.join(",") || ""
   end
 end

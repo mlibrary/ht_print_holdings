@@ -72,5 +72,5 @@ class MPMReport < PrintHoldingsReport
 end
 
 SerialsReport.new(csv: 'serials_jan_27.csv').dump_report
-MPMReport.new(csv: 'mpm_jan_27.csv').dump_report
-SPMReport.new(csv: 'spm_jan_27.csv').dump_report
+#MPMReport.new(csv: 'mpm_jan_27.csv').dump_report
+#SPMReport.new(csv: 'spm_jan_27.csv').dump_report

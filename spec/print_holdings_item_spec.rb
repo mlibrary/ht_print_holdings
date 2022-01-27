@@ -199,5 +199,17 @@ describe PrintHoldingsSerials do
     it "returns comma separated issns" do
       expect(subject.issn).to eq("1476-5551,0887-6924")
     end
+    it "handles nil issn" do
+      @serials_item["ISSN"] = nil
+      expect(subject.issn).to eq("")
+    end
+    it "handles filters out non issn values" do
+      @serials_item["ISSN"] = "0022-3050; 1468-330X (online)"
+      expect(subject.issn).to eq("0022-3050,1468-330X")
+    end
+    it "filters out invalid issns" do
+      @serials_item["ISSN"] = "0022-3050; 1468-330a"
+      expect(subject.issn).to eq("0022-3050")
+    end
   end
 end
