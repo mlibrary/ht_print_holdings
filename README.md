@@ -17,7 +17,7 @@ Install the gems
 $ docker-compose run --rm web bundle install
 ```
 
-Edit the last three lines of `process_print_holdings.csv` to reference your csv file(s).
+Edit the last three lines of `process_print_holdings.csv` (before the `tar.gz` step) to reference your csv file(s).
 
 Then run
 ```
