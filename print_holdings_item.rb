@@ -22,7 +22,7 @@ class PrintHoldingsItem
   end
   def gov_doc
     #do something with this?
-    bib08 = @data["BIB 008 MARC"]
+    bib08 = @data["BIB 008 MARC"] || []
     (bib08[17] == 'u' && bib08[28] == 'f') ? 1 : 0
   end
   def electronic_only?

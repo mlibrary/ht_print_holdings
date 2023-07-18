@@ -104,6 +104,10 @@ describe PrintHoldingsItem do
       @spm_item["BIB 008 MARC"] = "991115s1999####caua#####b####000#0#eng#d"
       expect(subject.gov_doc).to eq(0)
     end
+    it "returns false if BIB 008 MARC is empty" do
+      @spm_item["BIB 008 MARC"] =  nil
+      expect(subject.gov_doc).to eq(0)
+    end
   end
   context "#condition" do
     ["Brittle", "Damaged", "Deteriorating", "Fragile"].each do |cond|
