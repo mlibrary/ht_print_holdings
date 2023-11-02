@@ -20,6 +20,10 @@ describe PrintHoldingsItem do
       @spm_item["BIB 008 MARC"] = nil
       expect(subject.skip?).to eq(true)
     end
+    it "is true for empty oclc" do
+      @spm_item["OCLC Control Number (035a)"] = nil
+      expect(subject.skip?).to eq(true)
+    end
     context "byte 23 of Bib 008" do
       it "is true when it is 'a'" do
         @spm_item["BIB 008 MARC"][23] = 'a'

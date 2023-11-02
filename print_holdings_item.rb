@@ -4,7 +4,7 @@ class PrintHoldingsItem
   end
   def skip?
     return false if sdr_eo?
-    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? || invalid_bib008?
+    skippable_location? || skippable_callnumber? || skippable_library? || invalid_barcode? || invalid_bib008? || no_oclc?
   end
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
@@ -58,6 +58,9 @@ class PrintHoldingsItem
   end
   def sdr_eo?
     @data["Library Code"] == 'SDR' && @data["Location Code"] == 'EO'
+  end
+  def no_oclc?
+    oclc == ""
   end
   def skippable_library?
     ["SDR","ELEC"].include?(@data["Library Code"])

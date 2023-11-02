@@ -82,9 +82,9 @@ class MPMReport < PrintHoldingsReport
   end
 end
 
-#SerialsReport.new(csv: 'serials_jan_27.csv').dump_report
-#MPMReport.new(csv: 'mpm_jan_27.csv').dump_report
-#SPMReport.new(csv: 'spm_jan_27.csv').dump_report
+SerialsReport.new(csv: 'PrintHoldingsSerials_20230825.csv').dump_report
+MPMReport.new(csv: 'PrintHoldingsMultiPartMonographs_20230825.csv').dump_report
+SPMReport.new(csv: 'PrintHoldingsSinglePartMonographs_20230825.csv').dump_report
 system("tar", "-czvf", "umich_#{PrintHoldingsReport.today}.tar.gz", 
        SPMReport.report_path, 
        MPMReport.report_path, 
