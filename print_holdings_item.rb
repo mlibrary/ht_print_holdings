@@ -9,6 +9,9 @@ class PrintHoldingsItem
   def to_s
     [oclc,mms_id,holding_status,condition,gov_doc].join("\t")
   end
+  def header
+    ["oclc","local_id","status","condition","govdoc"].join("\t")
+  end
   def oclc
     #to do: what other forms to oclc numbers come in? Handle all. dedup.
     network_number = @data['OCLC Control Number (035a)'] || ""
@@ -88,6 +91,9 @@ class PrintHoldingsMultiPartMonograph < PrintHoldingsItem
   def to_s
     [oclc,mms_id,holding_status,condition,enum_chron,gov_doc].join("\t")
   end
+  def header
+    ["oclc","local_id","status","condition","enum_chron","govdoc"].join("\t")
+  end
   def enum_chron
     @data["Description"].strip
   end
@@ -96,6 +102,9 @@ class PrintHoldingsSerials < PrintHoldingsItem
   def skip?
     return false if sdr_eo?
     skippable_library? || skippable_location? || skippable_callnumber?
+  end
+  def header
+    ["oclc","local_id","issn","govdoc"].join("\t")
   end
   def to_s
     [oclc,mms_id,issn,gov_doc].join("\t")

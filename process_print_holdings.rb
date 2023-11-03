@@ -18,6 +18,7 @@ class PrintHoldingsReport
     puts "\n"
     line_count = %x{wc -l < "#{@csv_path}"}.to_i - 1
     report = file(report_path)
+    report.puts header
     bar = ProgressBar.new(line_count) 
     CSV.foreach(@csv_path, headers: true, encoding: 'bom|utf-8' ) do |x|
       item = ph_item(x)
@@ -28,11 +29,14 @@ class PrintHoldingsReport
   def name
     self.class.name
   end
+  def header
+    #parent class
+  end
   def ph_item(line)
     #parent class
   end
   def self.report_path
-    "umich_#{today}_#{name}.txt"
+    "umich_#{name}_full_#{today}.tsv"
   end
   def report_path
     self.class.report_path
@@ -49,7 +53,7 @@ class PrintHoldingsReport
 end
 class SerialsReport < PrintHoldingsReport
   def self.name
-    "serial"
+    "ser"
   end
   def ph_item(row)
     PrintHoldingsSerials.new(row)
@@ -61,32 +65,36 @@ class SerialsReport < PrintHoldingsReport
     report.puts unique_lines.join("\n")
     system("mv","tmp_#{report_path}",report_path)
     @logger.info ("deduplicated serial report")
-    
-
+  end
+  def header
+    ["oclc","local_id","issn","govdoc"].join("\t")
   end
 end
 class SPMReport < PrintHoldingsReport
   def self.name
-    "mono_single"
+    "spm"
   end
   def ph_item(row)
     PrintHoldingsItem.new(row)
   end
+  def header
+    ["oclc","local_id","status","condition","govdoc"].join("\t")
+  end
 end
 class MPMReport < PrintHoldingsReport
   def self.name
-    "mono_multi"
+    "mpm"
   end
   def ph_item(row)
     PrintHoldingsMultiPartMonograph.new(row)
   end
+  def header
+    ["oclc","local_id","status","condition","enum_chron","govdoc"].join("\t")
+  end
 end
 
+#Note to self. Maybe check if there are updates to this process before I send
+#another one.
 SerialsReport.new(csv: 'PrintHoldingsSerials_20230825.csv').dump_report
-MPMReport.new(csv: 'PrintHoldingsMultiPartMonographs_20230825.csv').dump_report
-SPMReport.new(csv: 'PrintHoldingsSinglePartMonographs_20230825.csv').dump_report
-system("tar", "-czvf", "umich_#{PrintHoldingsReport.today}.tar.gz", 
-       SPMReport.report_path, 
-       MPMReport.report_path, 
-       SerialsReport.report_path
-      )
+#MPMReport.new(csv: 'PrintHoldingsMultiPartMonograph_20230825.csv').dump_report
+#SPMReport.new(csv: 'PrintHoldingsSinglePartMonographs_20230825.csv').dump_report
